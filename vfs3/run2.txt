@@ -1,0 +1,8 @@
+conf-dump
+ls
+cd docs
+pwd
+cat note.txt
+cd ..
+pwd
+exit

@@ -1,0 +1,10 @@
+{
+  "type": "dir",
+  "children": {
+    "readme.txt": {
+      "type": "file",
+      "mode": "text",
+      "data": "Hello, Max!\n"
+    }
+  }
+}
