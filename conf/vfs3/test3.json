@@ -1,0 +1,9 @@
+{"type":"dir","children":{
+  "a":{"type":"dir","children":{
+    "b":{"type":"dir","children":{
+      "c":{"type":"dir","children":{
+        "deep.txt":{"type":"file","mode":"text","data":"deep\n"}
+      }}
+    }}
+  }}
+}}

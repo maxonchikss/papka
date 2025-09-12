@@ -1,0 +1,20 @@
+{
+  "type": "dir",
+  "children": {
+    "readme.txt": {
+      "type": "file",
+      "mode": "text",
+      "data": "Hello, Max!\n"
+    },
+    "docs": {
+      "type": "dir",
+      "children": {
+        "note.txt": {
+          "type": "file",
+          "mode": "text",
+          "data": "This is a note.\n"
+        }
+      }
+    }
+  }
+}

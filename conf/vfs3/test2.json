@@ -1,0 +1,3 @@
+{"type":"dir","children":{
+  "f1.txt":{"type":"file","mode":"text","data":"file1\n"},
+}}
