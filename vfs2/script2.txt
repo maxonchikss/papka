@@ -1,5 +1,0 @@
-ls
-cd
-conf-dump
-bruh
-exit
