@@ -1,5 +1,0 @@
-conf-dump
-ls
-cat readme.txt
-pwd
-exit
