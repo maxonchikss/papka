@@ -1,0 +1,25 @@
+{
+  "type": "dir",
+  "children": {
+    "readme.txt": {
+      "type": "file",
+      "mode": "text",
+      "data": "---Welcome to Twin Peaks!\n"
+    },
+    "docs": {
+      "type": "dir",
+      "children": {
+        "note.txt": {
+          "type": "file",
+          "mode": "text",
+          "data": "---Damn delicious coffee.\n"
+        },
+        "secret.txt": {
+          "type": "file",
+          "mode": "base64",
+          "data": "LS0tRmlyZSB3YWxrcyB3aXRoIG1lLgo=\n"
+        }
+      }
+    }
+  }
+}

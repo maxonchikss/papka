@@ -1,0 +1,30 @@
+{
+  "type": "dir",
+  "children": {
+    "readme.txt": {
+      "type": "file",
+      "mode": "text",
+      "data": "Hello, Max!\n"
+    },
+    "docs": {
+      "type": "dir",
+      "children": {
+        "note.txt": {
+          "type": "file",
+          "mode": "base64",
+          "data": "0YLQtdC60LDRgSDQntC10YHRgtGAINC60L7Qu9GM0LHRg9GC\n\n"
+        },
+        "archive": {
+          "type": "dir",
+          "children": {
+            "old.txt": {
+              "type": "file",
+              "mode": "text",
+              "data": "2R cafe\n"
+            }
+          }
+        }
+      }
+    }
+  }
+}

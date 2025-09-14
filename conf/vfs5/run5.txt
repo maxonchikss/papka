@@ -1,0 +1,24 @@
+conf-dump
+pwd
+ls
+echo Hello World
+rev Hello Emulator
+
+cat readme.txt
+cat docs/note.txt
+
+cd docs
+pwd
+cd ..
+pwd
+
+mkdir testdir
+ls
+cd testdir
+pwd
+cd ..
+rm testdir
+ls
+
+mkdir docs
+rm notfound

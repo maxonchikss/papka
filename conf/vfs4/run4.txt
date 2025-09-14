@@ -1,0 +1,15 @@
+conf-dump
+pwd
+ls
+ls nofolder
+cat readme.txt
+cd docs
+pwd
+ls
+cat note.txt
+cat secret.txt
+echo Hi Garry!
+rev Hello World!
+cd ..
+pwd
+exit

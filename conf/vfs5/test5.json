@@ -1,0 +1,30 @@
+{
+  "type": "dir",
+  "children": {
+    "readme.txt": {
+      "type": "file",
+      "mode": "text",
+      "data": "---Welcome to Twin Peaks!\n"
+    },
+    "docs": {
+      "type": "dir",
+      "children": {
+        "note.txt": {
+          "type": "file",
+          "mode": "text",
+          "data": "---Hi, Diane, this Daile Cooper\n"
+        }
+      }
+    },
+    "bin": {
+      "type": "dir",
+      "children": {
+        "data.b64": {
+          "type": "file",
+          "mode": "base64",
+          "data": "---Damn delicious coffee"
+        }
+      }
+    }
+  }
+}
