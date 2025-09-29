@@ -10,14 +10,10 @@
 # 4. Создать стартовый скрипт для тестирования всех реализованных на этом и
 # прошлых этапах команд. Добавить туда примеры всех режимов команд,
 # включая работу с VFS и обработку ошибок.
-# VFS - ditrectory, docs trouble,
-# VFS$ ls ../docs/..
-# oops: ../docs/..
 import sys, os, json, base64
 
 FS_TAG = "VFS"   # дефолтное имя
 SIGN = f"{FS_TAG}$ "
-
 VFS = None       # дерево файловой системы в памяти
 CWD = []         # текущая директория
 VFS_PATH = None
@@ -33,37 +29,44 @@ def load_vfs(path):
         print(f"Ошибка загрузки VFS: {e}")
         sys.exit(1)
 
-# парсер команд
+# парсер
 def split_line(inp):
     segs = inp.strip().split()
     if not segs: return None, []
     return segs[0], segs[1:]
-
-# разрешение пути
+# путь
 def resolve(path: str):
     global VFS, CWD
     if path.startswith("/"):
         parts = path.strip("/").split("/")
         res = []
     else:
-        parts = CWD + path.split("/")
-        res = []
+        parts = path.split("/")
+        res = CWD.copy()
 
     node = VFS
-    for p in parts:
-        if p in ("", "."):  # пусто или "."
-            continue
-        if p == "..":       # шаг назад
-            if res:
-                res.pop()
-            continue
-        if node["type"] != "dir" or p not in node["children"]:
+    for p in res:
+        if p not in node["children"] or node["type"] != "dir":
             raise FileNotFoundError(path)
         node = node["children"][p]
-        res.append(p)
+
+    for p in parts:
+        if p in ("", "."):
+            continue
+        elif p == "..":
+            if res:
+                res.pop()
+            node = VFS
+            for r in res:
+                node = node["children"][r]
+            continue
+        else:
+            if node["type"] != "dir" or p not in node["children"]:
+                raise FileNotFoundError(path)
+            node = node["children"][p]
+            res.append(p)
 
     return node, res
-
 
 # list
 def cmd_ls(args):
@@ -105,15 +108,18 @@ def cmd_conf(_):
     print(f"START_SCRIPT={START_SCRIPT}")
     print(f"CWD=/{'/'.join(CWD)}")
 
-# команды
+# all
 def do_cmd(cmd, args):
-    if cmd == "ls": cmd_ls(args)
-    elif cmd == "cd": cmd_cd(args)
-    elif cmd == "pwd": cmd_pwd(args)
-    elif cmd == "cat": cmd_cat(args)
-    elif cmd == "conf-dump": cmd_conf(args)
-    elif cmd == "exit": sys.exit(0)
-    else: print(f"unknown: {cmd}")
+    try:
+        if cmd == "ls": cmd_ls(args)
+        elif cmd == "cd": cmd_cd(args)
+        elif cmd == "pwd": cmd_pwd(args)
+        elif cmd == "cat": cmd_cat(args)
+        elif cmd == "conf-dump": cmd_conf(args)
+        elif cmd == "exit": sys.exit(0)
+        else: print(f"unknown: {cmd}")
+    except FileNotFoundError as e:
+        print(f"oops: {e}")
 
 # выполнение скрипта
 def run_script(path):

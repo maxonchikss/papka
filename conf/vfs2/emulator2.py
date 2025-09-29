@@ -103,9 +103,9 @@ def main():
     global VFS_PATH, START_SCRIPT, FS_TAG, SIGN
 
     if len(sys.argv) > 1:
-        FS_TAG = sys.argv[1]      # имя VFS из аргумента
-        SIGN = f"{FS_TAG}$ "      # обновляем приглашение
-        VFS_PATH = sys.argv[1]    # пусть путь к VFS совпадает с именем
+        FS_TAG = sys.argv[1]
+        SIGN = f"{FS_TAG}$ "
+        VFS_PATH = sys.argv[1]
 
     if len(sys.argv) > 2:
         START_SCRIPT = sys.argv[2]

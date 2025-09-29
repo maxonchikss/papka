@@ -24,25 +24,37 @@ def split_line(inp):
         return None, []
     return segs[0], segs[1:]
 
-def resolve(path):
+def resolve(path: str):
+    global VFS, CWD
+    if path.startswith("/"):
+        parts = path.strip("/").split("/")
+        res = []
+    else:
+        parts = path.split("/")
+        res = CWD.copy()
+
     node = VFS
-    parts = (path.strip("/").split("/") if path.startswith("/")
-             else CWD + path.split("/"))
-    res = []
+    for p in res:
+        if p not in node["children"] or node["type"] != "dir":
+            raise FileNotFoundError(path)
+        node = node["children"][p]
+
     for p in parts:
         if p in ("", "."):
             continue
-        if p == "..":
+        elif p == "..":
             if res:
                 res.pop()
             node = VFS
             for r in res:
                 node = node["children"][r]
             continue
-        if node["type"] != "dir" or p not in node["children"]:
-            raise FileNotFoundError(path)
-        node = node["children"][p]
-        res.append(p)
+        else:
+            if node["type"] != "dir" or p not in node["children"]:
+                raise FileNotFoundError(path)
+            node = node["children"][p]
+            res.append(p)
+
     return node, res
 
 
@@ -54,10 +66,14 @@ def cmd_ls(args):
         if node["type"] != "dir":
             print(path)
             return
-        for name in node["children"]:
-            print(name)
+        for name, child in node["children"].items():
+            if child["type"] == "dir":
+                print(f"{name}/")
+            else:
+                print(name)
     except Exception:
         print(f"Ошибка ls: {args[0] if args else '.'}")
+
 
 
 # cd
@@ -103,9 +119,21 @@ def cmd_echo(args):
 # rev
 def cmd_rev(args):
     if not args:
-        print("")
-    else:
-        print(" ".join(args)[::-1])
+        return
+    for path in args:
+        try:
+            node, _ = resolve(path)
+            if node["type"] == "file":
+                if node.get("mode") == "base64":
+                    data = base64.b64decode(node["data"]).decode("utf-8", "replace")
+                else:
+                    data = node["data"]
+                for line in data.splitlines():
+                    print(line[::-1])
+            else:
+                print(path[::-1])
+        except Exception:
+            print(path[::-1])
 
 
 # conf-dump
@@ -118,61 +146,121 @@ def cmd_conf(_):
 # mkdir
 def cmd_mkdir(args):
     if not args:
-        print("Ошибка mkdir: имя не указано")
+        print("mkdir: missing operand")
         return
-    name = args[0]
-    try:
-        node, _ = resolve("/".join(CWD) if CWD else "/")
-        if name in node["children"]:
-            print(f"Ошибка mkdir: {name} уже существует")
-            return
-        node["children"][name] = {"type": "dir", "children": {}}
-    except Exception:
-        print(f"Ошибка mkdir: {name}")
+
+    # поддержка флага -p
+    create_parents = False
+    paths = []
+    for arg in args:
+        if arg == "-p":
+            create_parents = True
+        else:
+            paths.append(arg)
+
+    for path in paths:
+        parts = path.strip("/").split("/") if path.startswith("/") else CWD + path.split("/")
+        node = VFS
+        res = []
+
+        for p in parts:
+            if p in ("", "."):
+                continue
+            if p == "..":
+                if res:
+                    res.pop()
+                node = VFS
+                for r in res:
+                    node = node["children"][r]
+                continue
+
+            if node["type"] != "dir":
+                print(f"mkdir: cannot create directory '{path}': Not a directory")
+                break
+
+            if p not in node["children"]:
+                if create_parents or p == parts[-1]:
+                    node["children"][p] = {"type": "dir", "children": {}}
+                else:
+                    print(f"mkdir: cannot create directory '{path}': No such file or directory")
+                    break
+            elif p == parts[-1] and not create_parents:
+                print(f"mkdir: cannot create directory '{path}': File exists")
+                break
+            node = node["children"][p]
+            res.append(p)
+
 
 
 # rm
 def cmd_rm(args):
     if not args:
-        print("Ошибка rm: имя не указано")
+        print("rm: missing operand")
         return
-    name = args[0]
-    try:
-        node, _ = resolve("/".join(CWD) if CWD else "/")
-        if name not in node["children"]:
-            print(f"Ошибка rm: {name}")
-            return
-        del node["children"][name]
-    except Exception:
-        print(f"Ошибка rm: {name}")
 
+    recursive = False
+    force = False
+    paths = []
+
+    for arg in args:
+        if arg == "-r":
+            recursive = True
+        elif arg == "-f":
+            force = True
+        else:
+            paths.append(arg)
+
+    for path in paths:
+        try:
+            node, res = resolve(path)
+            if node["type"] == "dir" and not recursive:
+                print(f"rm: cannot remove '{path}': Is a directory")
+                continue
+
+            # удаление узла
+            parent_node = VFS
+            for p in res[:-1]:
+                parent_node = parent_node["children"][p]
+            del parent_node["children"][res[-1]]
+
+        except FileNotFoundError:
+            if not force:
+                print(f"rm: cannot remove '{path}': No such file or directory")
+
+def cmd_rev(args):
+    if not args:
+        return
+    for path in args:
+        try:
+            node, _ = resolve(path)
+            if node["type"] == "file":
+                if node.get("mode") == "base64":
+                    data = base64.b64decode(node["data"]).decode("utf-8", "replace")
+                else:
+                    data = node["data"]
+                for line in data.splitlines():
+                    print(line[::-1])
+            else:
+                print(path[::-1])
+        except Exception:
+            print(path[::-1])
 
 # команды
 def do_cmd(cmd, args):
-    if cmd == "ls":
-        cmd_ls(args)
-    elif cmd == "cd":
-        cmd_cd(args)
-    elif cmd == "pwd":
-        cmd_pwd(args)
-    elif cmd == "cat":
-        cmd_cat(args)
-    elif cmd == "echo":
-        cmd_echo(args)
-    elif cmd == "rev":
-        cmd_rev(args)
-    elif cmd == "conf-dump":
-        cmd_conf(args)
-    elif cmd == "mkdir":
-        cmd_mkdir(args)
-    elif cmd == "rm":
-        cmd_rm(args)
-    elif cmd == "exit":
-        sys.exit(0)
-    else:
-        print(f"unknown: {cmd}")
-
-
+    try:
+        if cmd == "ls": cmd_ls(args)
+        elif cmd == "cd": cmd_cd(args)
+        elif cmd == "pwd": cmd_pwd(args)
+        elif cmd == "cat": cmd_cat(args)
+        elif cmd == "conf-dump": cmd_conf(args)
+        elif cmd == "echo": cmd_echo(args)
+        elif cmd == "rev":  cmd_rev(args)
+        elif cmd == "exit": sys.exit(0)
+        elif cmd == "mkdir": cmd_mkdir(args)
+        elif cmd == "rm": cmd_rm(args)
+        else: print(f"unknown: {cmd}")
+    except FileNotFoundError as e:
+        print(f"oops: {e}")
 # script
 def run_script(path):
     with open(path, encoding="utf-8") as f:

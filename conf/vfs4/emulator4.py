@@ -23,25 +23,37 @@ def split_line(inp):
     return segs[0], segs[1:]
 
 # разбор пути в VFS
-def resolve(path):
+def resolve(path: str):
+    global VFS, CWD
+    if path.startswith("/"):
+        parts = path.strip("/").split("/")
+        res = []
+    else:
+        parts = path.split("/")
+        res = CWD.copy()
+
     node = VFS
-    parts = (path.strip("/").split("/") if path.startswith("/")
-             else CWD + path.split("/"))
-    res = []
+    for p in res:
+        if p not in node["children"] or node["type"] != "dir":
+            raise FileNotFoundError(path)
+        node = node["children"][p]
+
     for p in parts:
         if p in ("", "."):
             continue
-        if p == "..":
+        elif p == "..":
             if res:
                 res.pop()
             node = VFS
-            for step in res:
-                node = node["children"][step]
+            for r in res:
+                node = node["children"][r]
             continue
-        if node["type"] != "dir" or p not in node["children"]:
-            raise FileNotFoundError(path)
-        node = node["children"][p]
-        res.append(p)
+        else:
+            if node["type"] != "dir" or p not in node["children"]:
+                raise FileNotFoundError(path)
+            node = node["children"][p]
+            res.append(p)
+
     return node, res
 # ls
 def cmd_ls(args):
@@ -96,20 +108,36 @@ def cmd_echo(args):
 def cmd_rev(args):
     if not args:
         return
-    print(" ".join(args)[::-1])
+    for path in args:
+        try:
+            node, _ = resolve(path)
+            if node["type"] == "file":
+                if node.get("mode") == "base64":
+                    data = base64.b64decode(node["data"]).decode("utf-8", "replace")
+                else:
+                    data = node["data"]
+                for line in data.splitlines():
+                    print(line[::-1])
+            else:
+                print(path[::-1])
+        except Exception:
+            print(path[::-1])
+
 
 # all
 def do_cmd(cmd, args):
-    if cmd == "ls": cmd_ls(args)
-    elif cmd == "cd": cmd_cd(args)
-    elif cmd == "pwd": cmd_pwd(args)
-    elif cmd == "cat": cmd_cat(args)
-    elif cmd == "conf-dump": cmd_conf(args)
-    elif cmd == "echo": cmd_echo(args)
-    elif cmd == "rev": cmd_rev(args)
-    elif cmd == "exit": sys.exit(0)
-    else: print(f"unknown: {cmd}")
-
+    try:
+        if cmd == "ls": cmd_ls(args)
+        elif cmd == "cd": cmd_cd(args)
+        elif cmd == "pwd": cmd_pwd(args)
+        elif cmd == "cat": cmd_cat(args)
+        elif cmd == "conf-dump": cmd_conf(args)
+        elif cmd == "echo": cmd_echo(args)
+        elif cmd == "rev":  cmd_rev(args)
+        elif cmd == "exit": sys.exit(0)
+        else: print(f"unknown: {cmd}")
+    except FileNotFoundError as e:
+        print(f"oops: {e}")
 # script
 def run_script(path):
     with open(path, encoding="utf-8") as f:
