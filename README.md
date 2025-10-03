@@ -16,7 +16,8 @@ cd.
 функциональности, включая обработку ошибок.
 7. Результат выполнения этапа сохранить в репозиторий стандартно
 оформленным коммитом.
-<img width="1028" height="1472" alt="image" src="https://github.com/user-attachments/assets/d5158d9e-dbd1-40ba-8637-3f37a480129a" />
+<img width="991" height="104" alt="image" src="https://github.com/user-attachments/assets/971c2b4d-0129-4e91-9e6e-64c0d51e4e8d" />
+
 
 Этап 2. Конфигурация
 Цель: сделать эмулятор настраиваемым, то есть поддержать ввод параметров
@@ -38,8 +39,7 @@ cd.
 поддерживаемых параметров командной строки.
 6. Результат выполнения этапа сохранить в репозиторий стандартно
 оформленным коммитом.
-<img width="1182" height="716" alt="image" src="https://github.com/user-attachments/assets/3d04b0bd-fa64-4ba3-a863-5302c8f8e971" />
-<img width="842" height="892" alt="image" src="https://github.com/user-attachments/assets/cc510d23-932c-4057-bc7f-8f97eaa0330e" />
+<img width="521" height="342" alt="image" src="https://github.com/user-attachments/assets/2384535e-1f73-461c-826d-f4d4310049a4" />
 
 Этап 3. VFS
 Цель: подключить виртуальную файловую систему (VFS).
@@ -58,9 +58,8 @@ base64 или аналогичный формат.
 включая работу с VFS и обработку ошибок.
 5. Результат выполнения этапа сохранить в репозиторий стандартно
 оформленным коммитом.
-<img width="1486" height="1420" alt="image" src="https://github.com/user-attachments/assets/431da2a0-528d-4743-b164-b4faa9890da0" />
-Пример JSON файла:
-<img width="1404" height="958" alt="image" src="https://github.com/user-attachments/assets/4c157f55-fc9a-47fe-8aa8-3f6362cddaaf" />
+<img width="490" height="351" alt="image" src="https://github.com/user-attachments/assets/65777c00-6082-4918-952a-5486482425ce" />
+
 
 Этап 4. Основные команды
 Цель: поддержать команды, имитирующие работу в UNIX-подобной
@@ -73,8 +72,7 @@ base64 или аналогичный формат.
 работу с VFS и обработку ошибок.
 4. Результат выполнения этапа сохранить в репозиторий стандартно
 оформленным коммитом.
-<img width="1570" height="700" alt="image" src="https://github.com/user-attachments/assets/88fd5c34-78bd-4940-b10a-c4e7921f7f99" />
-<img width="1110" height="748" alt="image" src="https://github.com/user-attachments/assets/69065e99-b019-4f83-ad8e-0538ba694942" />
+<img width="408" height="570" alt="image" src="https://github.com/user-attachments/assets/6aa95a92-e55d-47f3-bdc0-198b04f468ec" />
 
 
 Этап 5. Дополнительные команды
@@ -87,6 +85,7 @@ base64 или аналогичный формат.
 работу с VFS и обработку ошибок.
 3. Результат выполнения этапа сохранить в репозиторий стандартно
 оформленным коммитом.
-<img width="1832" height="1448" alt="image" src="https://github.com/user-attachments/assets/4d5ab1f3-a85e-45b9-86b7-bb429db6eeda" />
-<img width="1584" height="1072" alt="image" src="https://github.com/user-attachments/assets/549fd0e1-154e-4c07-bc04-345a0e8124dc" />
+<img width="554" height="569" alt="image" src="https://github.com/user-attachments/assets/4e42f1cc-87fb-45de-ad08-cabb11106822" />
+
+
 
