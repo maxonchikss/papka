@@ -62,15 +62,12 @@ def resolve(path: str):
 def cmd_ls(args):
     try:
         path = args[0] if args else "."
-        node, _ = resolve(path if path != "." else "/".join(CWD))
+        node, _ = resolve(path)
         if node["type"] != "dir":
             print(path)
             return
-        for name, child in node["children"].items():
-            if child["type"] == "dir":
-                print(f"{name}/")
-            else:
-                print(name)
+        for name in node["children"]:
+            print(name)
     except Exception:
         print(f"Ошибка ls: {args[0] if args else '.'}")
 
