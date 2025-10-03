@@ -1,7 +1,6 @@
 conf-dump
 pwd
 ls
-ls nofolder
 cat readme.txt
 cd docs
 pwd

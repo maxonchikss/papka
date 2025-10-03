@@ -2,7 +2,7 @@ conf-dump
 pwd
 ls
 echo Hello World
-rev Hello Emulator
+rev Hello
 
 cat readme.txt
 cat docs/note.txt
@@ -17,7 +17,6 @@ ls
 cd testdir
 pwd
 cd ..
-rm testdir
 ls
 
 mkdir docs
